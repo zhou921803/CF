@@ -521,6 +521,9 @@ static CFTypeID __kCFRunLoopTimerTypeID = _kCFRuntimeNotATypeID;
 
 typedef struct __CFRunLoopMode *CFRunLoopModeRef;
 
+/*
+[salmon] CFRunLoopMode 运行模式结构体
+*/
 struct __CFRunLoopMode {
     CFRuntimeBase _base;
     pthread_mutex_t _lock;	/* must have the run loop locked before locking this */
@@ -634,24 +637,26 @@ typedef struct _per_run_data {
     uint32_t ignoreWakeUps;
 } _per_run_data;
 
-//[salmon] RunLoop定义
+/*
+[salmon] RunLoop 结构体定义
+*/
 struct __CFRunLoop {
     CFRuntimeBase _base;
-    pthread_mutex_t _lock;			/* locked for accessing mode list */
-    __CFPort _wakeUpPort;			// used for CFRunLoopWakeUp 
-    Boolean _unused;
+    pthread_mutex_t _lock;			/* locked for accessing mode list 访问运行模式列表的锁*/
+    __CFPort _wakeUpPort;			// used for CFRunLoopWakeUp  Runloop唤醒的句柄/端口
+    Boolean _unused;                //标志RunLoop是否还在使用？
     volatile _per_run_data *_perRunData;              // reset for runs of the run loop
-    pthread_t _pthread;
+    pthread_t _pthread;             //线程
     uint32_t _winthread;
-    CFMutableSetRef _commonModes;
-    CFMutableSetRef _commonModeItems;
-    CFRunLoopModeRef _currentMode;
-    CFMutableSetRef _modes;
-    struct _block_item *_blocks_head;
+    CFMutableSetRef _commonModes;   //运行模式集合
+    CFMutableSetRef _commonModeItems;   //运行模式items集合？
+    CFRunLoopModeRef _currentMode;  //当前RunLoop模式
+    CFMutableSetRef _modes;         //RunLoop可运行的所有模式
+    struct _block_item *_blocks_head;   //block头，和下面的block尾组成了一个链表
     struct _block_item *_blocks_tail;
-    CFAbsoluteTime _runTime;
-    CFAbsoluteTime _sleepTime;
-    CFTypeRef _counterpart;
+    CFAbsoluteTime _runTime;            //绝对时间
+    CFAbsoluteTime _sleepTime;          //睡眠时间
+    CFTypeRef _counterpart;             
 };
 
 /* Bit 0 of the base reserved bits is used for stopped state */
@@ -2329,6 +2334,9 @@ static void __CFRunLoopTimeout(void *arg) {
 }
 
 /* rl, rlm are locked on entrance and exit */
+/*
+[salmon] 3. RunLoop循环函数
+*/
 static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInterval seconds, Boolean stopAfterHandle, CFRunLoopModeRef previousMode) {
     uint64_t startTSR = mach_absolute_time();
 
@@ -2484,6 +2492,9 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
         __CFRunLoopLock(rl);
         __CFRunLoopModeLock(rlm);
 
+        /*
+        [salmon] 累加睡眠时间
+        */
         rl->_sleepTime += (poll ? 0.0 : (CFAbsoluteTimeGetCurrent() - sleepStart));
 
         // Must remove the local-to-this-activation ports in on every loop
@@ -2647,6 +2658,9 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
     return retVal;
 }
 
+/*
+[salmon] 2.根据modeName运行RunLoop
+*/
 SInt32 CFRunLoopRunSpecific(CFRunLoopRef rl, CFStringRef modeName, CFTimeInterval seconds, Boolean returnAfterSourceHandled) {     /* DOES CALLOUT */
     CHECK_FOR_FORK();
     if (__CFRunLoopIsDeallocating(rl)) return kCFRunLoopRunFinished;
@@ -2674,6 +2688,9 @@ SInt32 CFRunLoopRunSpecific(CFRunLoopRef rl, CFStringRef modeName, CFTimeInterva
     return result;
 }
 
+/*
+[salmon] 1. CFRunLoopRun入口，通过callout方式调用？应该是从app层调用过来的
+*/
 void CFRunLoopRun(void) {	/* DOES CALLOUT */
     int32_t result;
     do {
