@@ -72,6 +72,10 @@ CF_EXPORT void _CFRunLoopSetCurrent(CFRunLoopRef rl);
 
 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_LINUX)) || (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 CF_EXPORT CFRunLoopRef CFRunLoopGetMain(void);
+
+/*
+[salmon]1. RunLoop 入口函数，app的 UIApplication._run 会调用 CFRunLoopRunSpecific
+*/
 CF_EXPORT SInt32 CFRunLoopRunSpecific(CFRunLoopRef rl, CFStringRef modeName, CFTimeInterval seconds, Boolean returnAfterSourceHandled);
 
 

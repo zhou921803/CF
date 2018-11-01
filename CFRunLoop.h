@@ -82,6 +82,9 @@ CF_EXPORT void CFRunLoopAddCommonMode(CFRunLoopRef rl, CFStringRef mode);
 
 CF_EXPORT CFAbsoluteTime CFRunLoopGetNextTimerFireDate(CFRunLoopRef rl, CFStringRef mode);
 
+/*
+[salmon] CFRunLoopRun 函数导出，可以通过app调用
+*/
 CF_EXPORT void CFRunLoopRun(void);
 CF_EXPORT SInt32 CFRunLoopRunInMode(CFStringRef mode, CFTimeInterval seconds, Boolean returnAfterSourceHandled);
 CF_EXPORT Boolean CFRunLoopIsWaiting(CFRunLoopRef rl);
