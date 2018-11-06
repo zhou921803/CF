@@ -530,13 +530,13 @@ struct __CFRunLoopMode {
     CFStringRef _name;
     Boolean _stopped;
     char _padding[3];
-    CFMutableSetRef _sources0;
-    CFMutableSetRef _sources1;
-    CFMutableArrayRef _observers;
-    CFMutableArrayRef _timers;
-    CFMutableDictionaryRef _portToV1SourceMap;
-    __CFPortSet _portSet;
-    CFIndex _observerMask;
+    CFMutableSetRef _sources0;      //source0 资源集合
+    CFMutableSetRef _sources1;      //source1 资源集合
+    CFMutableArrayRef _observers;   //观察者数组，这个是观察什么东西？
+    CFMutableArrayRef _timers;      //定时器数组
+    CFMutableDictionaryRef _portToV1SourceMap;  //映射表？
+    __CFPortSet _portSet;           //port集合？
+    CFIndex _observerMask;          //
 #if USE_DISPATCH_SOURCE_FOR_TIMERS
     dispatch_source_t _timerSource;
     dispatch_queue_t _queue;
@@ -2388,8 +2388,9 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
     }
 
     Boolean didDispatchPortLastTime = true;
-    int32_t retVal = 0;
-    do {
+    int32_t retVal = 0;  // return value
+
+    do { //[salmon] do while 开头
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
         voucher_mach_msg_state_t voucherState = VOUCHER_MACH_MSG_STATE_UNCHANGED;
         voucher_t voucherCopy = NULL;
@@ -2406,11 +2407,16 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
 
         __CFRunLoopUnsetIgnoreWakeUps(rl);
 
+        //[salmon]通知观察者，通知即将处理计时器
         if (rlm->_observerMask & kCFRunLoopBeforeTimers) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers);
+
+        //[salmon]通知观察者， 通知即将处理source
         if (rlm->_observerMask & kCFRunLoopBeforeSources) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources);
 
+    //[salmon] 执行非延迟的主线程调用
 	__CFRunLoopDoBlocks(rl, rlm);  //执行block
 
+        //[salmon] 处理source
         Boolean sourceHandledThisLoop = __CFRunLoopDoSources0(rl, rlm, stopAfterHandle);
         if (sourceHandledThisLoop) {
             __CFRunLoopDoBlocks(rl, rlm);
@@ -2432,7 +2438,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
         }
 
         didDispatchPortLastTime = false;
-
+    //[salmon] 通知即将进入等待
 	if (!poll && (rlm->_observerMask & kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting);
 	__CFRunLoopSetSleeping(rl);
 	// do not do any user callouts after this point (after notifying of sleeping)
@@ -2450,7 +2456,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
 
 #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
 #if USE_DISPATCH_SOURCE_FOR_TIMERS
-        do {
+        do { //[salmon] 下面的do while 是个死循环
             if (kCFUseCollectableAllocator) {
                 // objc_clear_stack(0);
                 // <rdar://problem/16393959>
@@ -2474,7 +2480,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
                 // Go ahead and leave the inner loop.
                 break;
             }
-        } while (1);
+        } while (1); // [salmon] 死循环结束
 #else
         if (kCFUseCollectableAllocator) {
             // objc_clear_stack(0);
@@ -2510,6 +2516,8 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
 
         // user callouts now OK again
 	__CFRunLoopUnsetSleeping(rl);
+
+    // [salmon] 
 	if (!poll && (rlm->_observerMask & kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting);
 
         handle_msg:;
@@ -2648,7 +2656,7 @@ static int32_t __CFRunLoopRun(CFRunLoopRef rl, CFRunLoopModeRef rlm, CFTimeInter
         os_release(voucherCopy);
 #endif
 
-    } while (0 == retVal);
+    } while (0 == retVal); //[salmon] do while 结尾
 
     if (timeout_timer) {
         dispatch_source_cancel(timeout_timer);
@@ -2679,9 +2687,11 @@ SInt32 CFRunLoopRunSpecific(CFRunLoopRef rl, CFStringRef modeName, CFTimeInterva
     rl->_currentMode = currentMode; //更新 运行mode
     int32_t result = kCFRunLoopRunFinished;
 
-	if (currentMode->_observerMask & kCFRunLoopEntry ) __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry); //设置mode掩码，记录进入RunLoop状态
+    //[salmon]通知将进入RunLoop
+	if (currentMode->_observerMask & kCFRunLoopEntry ) __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry); 
 	result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode);
-	if (currentMode->_observerMask & kCFRunLoopExit ) __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopExit);  //设置mode掩码，记录推出RunLoop状态
+    //[salmon]通知将推出RunLoop
+	if (currentMode->_observerMask & kCFRunLoopExit ) __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopExit); 
 
         __CFRunLoopModeUnlock(currentMode); //mode 访问解锁
         __CFRunLoopPopPerRunData(rl, previousPerRun);
