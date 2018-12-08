@@ -1,0 +1,19 @@
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+  * frame #0: 0x0000000109e73154 Salmon`-[JMView layoutSubviews](self=0x00007fa3a040f690, _cmd="layoutSubviews") at JMView.m:29
+    frame #1: 0x0000000110fc6795 UIKitCore`-[UIView(CALayerDelegate) layoutSublayersOfLayer:] + 1441
+    frame #2: 0x000000010f3b7b19 QuartzCore`-[CALayer layoutSublayers] + 175  >>>CALayer 开始重新布局 SubLayers
+    frame #3: 0x000000010f3bc9d3 QuartzCore`CA::Layer::layout_if_needed(CA::Transaction*) + 395
+    frame #4: 0x000000010f3357ca QuartzCore`CA::Context::commit_transaction(CA::Transaction*) + 342
+    frame #5: 0x000000010f36c97e QuartzCore`CA::Transaction::commit() + 576
+    frame #6: 0x0000000110ad6701 UIKitCore`_UIApplicationFlushRunLoopCATransactionIfTooLate + 165
+    frame #7: 0x0000000110bd0569 UIKitCore`__handleEventQueueInternal + 6874
+
+    frame #8: 0x000000010bdf4721 CoreFoundation`__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 17
+    frame #9: 0x000000010bdf3f93 CoreFoundation`__CFRunLoopDoSources0 + 243
+    frame #10: 0x000000010bdee63f CoreFoundation`__CFRunLoopRun + 1263
+    frame #11: 0x000000010bdede11 CoreFoundation`CFRunLoopRunSpecific + 625
+    frame #12: 0x00000001100411dd GraphicsServices`GSEventRunModal + 62
+    frame #13: 0x0000000110adc81d UIKitCore`UIApplicationMain + 140
+    frame #14: 0x0000000109e73650 Salmon`main(argc=1, argv=0x00007ffee5d8bfc8) at main.m:14
+    frame #15: 0x000000010d328575 libdyld.dylib`start + 1
+    frame #16: 0x000000010d328575 libdyld.dylib`start + 1

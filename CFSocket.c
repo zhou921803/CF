@@ -2997,6 +2997,7 @@ static void __CFSocketPerformV0(void *info) {
 // CFLog(5, CFSTR("__CFSocketPerformV0(%p) done"), s);
 }
 
+//[salmon] Socket转成Source
 CFRunLoopSourceRef CFSocketCreateRunLoopSource(CFAllocatorRef allocator, CFSocketRef s, CFIndex order) {
     CHECK_FOR_FORK();
     CFRunLoopSourceRef result = NULL;

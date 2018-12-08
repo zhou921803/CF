@@ -1,0 +1,17 @@
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 3.1
+  * frame #0: 0x0000000109e73461 Salmon`-[JMView touchesBegan:withEvent:](self=0x00007fa3a040f690, _cmd="touchesBegan:withEvent:", touches=1 element, event=0x0000600001feb330) at JMView.m:47
+    frame #1: 0x0000000110b18dff UIKitCore`-[UIWindow _sendTouchesForEvent:] + 2052
+    frame #2: 0x0000000110b1a7a0 UIKitCore`-[UIWindow sendEvent:] + 4080
+    frame #3: 0x0000000110af8394 UIKitCore`-[UIApplication sendEvent:] + 352  >>>发送Event
+
+    frame #4: 0x0000000110bcd5a9 UIKitCore`__dispatchPreprocessedEventFromEventQueue + 3054
+    frame #5: 0x0000000110bd01cb UIKitCore`__handleEventQueueInternal + 5948
+    frame #6: 0x000000010bdf4721 CoreFoundation`__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 17
+    frame #7: 0x000000010bdf3f93 CoreFoundation`__CFRunLoopDoSources0 + 243
+    frame #8: 0x000000010bdee63f CoreFoundation`__CFRunLoopRun + 1263
+    frame #9: 0x000000010bdede11 CoreFoundation`CFRunLoopRunSpecific + 625
+    frame #10: 0x00000001100411dd GraphicsServices`GSEventRunModal + 62
+    frame #11: 0x0000000110adc81d UIKitCore`UIApplicationMain + 140
+    frame #12: 0x0000000109e73650 Salmon`main(argc=1, argv=0x00007ffee5d8bfc8) at main.m:14
+    frame #13: 0x000000010d328575 libdyld.dylib`start + 1
+    frame #14: 0x000000010d328575 libdyld.dylib`start + 1

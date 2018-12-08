@@ -276,6 +276,9 @@ CF_PRIVATE Boolean _CFBundleDYLDCheckLoaded(CFBundleRef bundle) {
     return bundle->_isLoaded;
 }
 
+/**
+ * DYLD 加载bundle
+ */
 CF_PRIVATE Boolean _CFBundleDYLDLoadBundle(CFBundleRef bundle, Boolean forceGlobal, CFErrorRef *error) {
     CFErrorRef localError = NULL, *subError = (error ? &localError : NULL);
     NSLinkEditErrors c = NSLinkEditUndefinedError;

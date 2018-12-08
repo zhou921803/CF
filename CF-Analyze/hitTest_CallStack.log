@@ -1,0 +1,34 @@
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 2.1
+  * frame #0: 0x0000000109e734d5 Salmon`-[JMView hitTest:withEvent:](self=0x00007fa3a040f690, _cmd="hitTest:withEvent:", point=(x = 260, y = 483), event=0x0000600001feb330) at JMView.m:53
+    frame #1: 0x0000000110fa7ff7 UIKitCore`-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestWindow:] + 87
+    frame #2: 0x0000000110fa7ed1 UIKitCore`__38-[UIView(Geometry) hitTest:withEvent:]_block_invoke + 121
+    frame #3: 0x000000010bdb7c9c CoreFoundation`-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 476
+    frame #4: 0x0000000110fa7a80 UIKitCore`-[UIView(Geometry) hitTest:withEvent:] + 460
+    frame #5: 0x0000000110fa7ff7 UIKitCore`-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestWindow:] + 87
+    frame #6: 0x0000000110fa7ed1 UIKitCore`__38-[UIView(Geometry) hitTest:withEvent:]_block_invoke + 121
+    frame #7: 0x000000010bdb7c9c CoreFoundation`-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 476
+    frame #8: 0x0000000110fa7a80 UIKitCore`-[UIView(Geometry) hitTest:withEvent:] + 460
+    frame #9: 0x0000000110fa7ff7 UIKitCore`-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestWindow:] + 87
+    frame #10: 0x0000000110b2bd44 UIKitCore`-[UIWindow _hitTestLocation:inScene:withWindowServerHitTestWindow:event:] + 194
+    frame #11: 0x0000000110b2ba79 UIKitCore`__70+[UIWindow _hitTestToPoint:forEvent:windowServerHitTestWindow:screen:]_block_invoke + 159
+    frame #12: 0x0000000110b2b77b UIKitCore`+[UIWindow _topVisibleWindowPassingTest:] + 506
+    frame #13: 0x0000000110b2b97c UIKitCore`+[UIWindow _hitTestToPoint:forEvent:windowServerHitTestWindow:screen:] + 245
+    frame #14: 0x0000000110b2bede UIKitCore`-[UIWindow _targetWindowForPathIndex:atPoint:forEvent:windowServerHitTestWindow:onScreen:] + 200
+    >>>上面是hitTest 从 UIWindow 开始 hitTest
+
+    frame #15: 0x0000000110bc8c6a UIKitCore`__startNewUITouch + 658
+    frame #16: 0x0000000110bc88ad UIKitCore`____updateTouchesWithDigitizerEventAndDetermineIfShouldSend_block_invoke.59 + 239
+    frame #17: 0x0000000110bd6739 UIKitCore`_UIEventHIDEnumerateChildren + 123
+    frame #18: 0x0000000110bc7e13 UIKitCore`__updateTouchesWithDigitizerEventAndDetermineIfShouldSend + 773 >>>确定Event是否需要发送
+    frame #19: 0x0000000110bccdb0 UIKitCore`__dispatchPreprocessedEventFromEventQueue + 1013
+    frame #20: 0x0000000110bd01cb UIKitCore`__handleEventQueueInternal + 5948
+    
+    frame #21: 0x000000010bdf4721 CoreFoundation`__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 17  
+    frame #22: 0x000000010bdf3f93 CoreFoundation`__CFRunLoopDoSources0 + 243
+    frame #23: 0x000000010bdee63f CoreFoundation`__CFRunLoopRun + 1263
+    frame #24: 0x000000010bdede11 CoreFoundation`CFRunLoopRunSpecific + 625
+    frame #25: 0x00000001100411dd GraphicsServices`GSEventRunModal + 62
+    frame #26: 0x0000000110adc81d UIKitCore`UIApplicationMain + 140
+    frame #27: 0x0000000109e73650 Salmon`main(argc=1, argv=0x00007ffee5d8bfc8) at main.m:14
+    frame #28: 0x000000010d328575 libdyld.dylib`start + 1
+    frame #29: 0x000000010d328575 libdyld.dylib`start + 1

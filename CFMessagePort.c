@@ -1124,6 +1124,7 @@ static void *__CFMessagePortPerform(void *msg, CFIndex size, CFAllocatorRef allo
     return replymsg;
 }
 
+// [salmon] MessagePort 转换成Source
 CFRunLoopSourceRef CFMessagePortCreateRunLoopSource(CFAllocatorRef allocator, CFMessagePortRef ms, CFIndex order) {
     CFRunLoopSourceRef result = NULL;
     __CFGenericValidateType(ms, CFMessagePortGetTypeID());

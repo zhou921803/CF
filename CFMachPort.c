@@ -596,7 +596,7 @@ CF_PRIVATE void *__CFMachPortPerform(void *msg, CFIndex size, CFAllocatorRef all
 
 
     
-    
+// [salmon] MachPort转换成Source
 CFRunLoopSourceRef CFMachPortCreateRunLoopSource(CFAllocatorRef allocator, CFMachPortRef mp, CFIndex order) {
     CHECK_FOR_FORK_RET(NULL);
     __CFGenericValidateType(mp, CFMachPortGetTypeID());
@@ -609,6 +609,8 @@ CFRunLoopSourceRef CFMachPortCreateRunLoopSource(CFAllocatorRef allocator, CFMac
             mp->_source = NULL;
         }
         if (NULL == mp->_source) {
+
+            // [salmon] MachPort 转换为 Source1
             CFRunLoopSourceContext1 context;
             context.version = 1;
             context.info = (void *)mp;
